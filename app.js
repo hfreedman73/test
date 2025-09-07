@@ -108,8 +108,12 @@ function drawNoBeard(keypoints) {
 
     const skinColor1 = ctx.getImageData(foreheadX, foreheadY, 1, 1).data;
     const skinColor2 = ctx.getImageData(cheekX, cheekY, 1, 1).data;
-    console.log("Skin color 1:", skinColor1);
-    console.log("Skin color 2:", skinColor2);
+
+    // Draw sampled colors for visual debugging
+    ctx.fillStyle = `rgb(${skinColor1[0]}, ${skinColor1[1]}, ${skinColor1[2]})`;
+    ctx.fillRect(10, 10, 20, 20);
+    ctx.fillStyle = `rgb(${skinColor2[0]}, ${skinColor2[1]}, ${skinColor2[2]})`;
+    ctx.fillRect(40, 10, 20, 20);
 
     ctx.strokeStyle = "lime";
     ctx.lineWidth = 1;
