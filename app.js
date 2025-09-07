@@ -47,6 +47,7 @@ async function render() {
 
     const predictions = await model.estimateFaces({
         input: video,
+        predictIrises: false,
     });
 
     if (predictions.length > 0) {
