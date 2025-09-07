@@ -52,6 +52,14 @@ async function render() {
 
     if (predictions.length > 0) {
         const keypoints = predictions[0].scaledMesh;
+
+        // Draw all keypoints for debugging
+        for (let i = 0; i < keypoints.length; i++) {
+            const [x, y, z] = keypoints[i];
+            ctx.fillStyle = "cyan";
+            ctx.fillRect(x, y, 1, 1);
+        }
+
         drawNoBeard(keypoints);
 
         if (startTime === null) {
@@ -93,14 +101,18 @@ function drawNoBeard(keypoints) {
     const foreheadKeypoint = keypoints[10];
     const cheekKeypoint = keypoints[117];
 
-    const skinColor1 = ctx.getImageData(foreheadKeypoint[0], foreheadKeypoint[1], 1, 1).data;
-    const skinColor2 = ctx.getImageData(cheekKeypoint[0], cheekKeypoint[1], 1, 1).data;
+    const foreheadX = Math.min(canvas.width - 1, Math.max(0, foreheadKeypoint[0]));
+    const foreheadY = Math.min(canvas.height - 1, Math.max(0, foreheadKeypoint[1]));
+    const cheekX = Math.min(canvas.width - 1, Math.max(0, cheekKeypoint[0]));
+    const cheekY = Math.min(canvas.height - 1, Math.max(0, cheekKeypoint[1]));
 
-    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, `rgb(${skinColor1[0]}, ${skinColor1[1]}, ${skinColor1[2]})`);
-    gradient.addColorStop(1, `rgb(${skinColor2[0]}, ${skinColor2[1]}, ${skinColor2[2]})`);
+    const skinColor1 = ctx.getImageData(foreheadX, foreheadY, 1, 1).data;
+    const skinColor2 = ctx.getImageData(cheekX, cheekY, 1, 1).data;
+    console.log("Skin color 1:", skinColor1);
+    console.log("Skin color 2:", skinColor2);
 
-    ctx.fillStyle = gradient;
+    ctx.strokeStyle = "lime";
+    ctx.lineWidth = 1;
 
     ctx.beginPath();
     ctx.moveTo(keypoints[beardKeypoints[0]][0], keypoints[beardKeypoints[0]][1]);
@@ -109,7 +121,7 @@ function drawNoBeard(keypoints) {
         ctx.lineTo(x, y);
     }
     ctx.closePath();
-    ctx.fill();
+    ctx.stroke();
 }
 
 async function main() {
